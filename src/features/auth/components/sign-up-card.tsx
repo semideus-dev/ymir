@@ -22,19 +22,19 @@ import {
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import SocialAuthCard from "@/features/auth/components/social-auth-card";
-
-const formSchema = z.object({
-  username: z.string(),
-  email: z.string(),
-  password: z.string(),
-});
+import { signUpSchema } from "@/features/auth/schemas";
 
 export default function SignUpCard() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof signUpSchema>) {
     console.log(values);
   }
 

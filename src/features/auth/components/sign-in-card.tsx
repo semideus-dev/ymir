@@ -22,25 +22,28 @@ import {
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import SocialAuthCard from "@/features/auth/components/social-auth-card";
-
-const formSchema = z.object({
-  email: z.string(),
-  password: z.string(),
-});
+import { signInSchema } from "@/features/auth/schemas";
+import { useSignIn } from "@/features/auth/api/use-sign-in";
 
 export default function SignInCard() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { mutate } = useSignIn();
+
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: ""
+    }
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  function onSubmit(values: z.infer<typeof signInSchema>) {
+    mutate({ json: values });
   }
 
   return (
     <Card className="w-[90%] md:w-[70%]">
       <CardHeader className="text-center">
-        <CardTitle>Create an Account</CardTitle>
+        <CardTitle>Account Credentials</CardTitle>
         <CardDescription>
           Already have an account?{" "}
           <Link
@@ -63,7 +66,6 @@ export default function SignInCard() {
                   <FormControl>
                     <Input type="email" {...field} />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
