@@ -23,8 +23,11 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import SocialAuthCard from "@/features/auth/components/social-auth-card";
 import { signUpSchema } from "@/features/auth/schemas";
+import { useSignUp } from "@/features/auth/api/use-sign-up";
 
 export default function SignUpCard() {
+  const { mutate } = useSignUp();
+
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -35,7 +38,7 @@ export default function SignUpCard() {
   });
 
   function onSubmit(values: z.infer<typeof signUpSchema>) {
-    console.log(values);
+    mutate({ json: values });
   }
 
   return (
