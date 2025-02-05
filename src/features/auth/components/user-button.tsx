@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,8 +11,10 @@ import {
 import { useCurrent } from "@/features/auth/api/use-current";
 import { useSignOut } from "@/features/auth/api/use-sign-out";
 import { Loader } from "lucide-react";
+import { Icon } from "@iconify/react";
 
 export function UserButton() {
+  const { mutate: signOut } = useSignOut();
   const { data: user, isLoading } = useCurrent();
 
   if (!user) {
@@ -21,8 +23,8 @@ export function UserButton() {
 
   if (isLoading) {
     return (
-      <div className="size-10 rounded-full bg-muted flex items-center justify-center">
-        <Loader className="size-4 text-muted-foreground animate-spin" />
+      <div className="flex size-10 items-center justify-center rounded-full bg-muted">
+        <Loader className="size-4 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -31,13 +33,43 @@ export function UserButton() {
 
   const fallback = name
     ? name.charAt(0).toUpperCase()
-    : email.charAt(0).toUpperCase() ?? "U";
+    : (email.charAt(0).toUpperCase() ?? "U");
 
   return (
-    <Avatar className="size-10 hover:opacity-75 transition border">
-      <AvatarFallback className="font-semibold flex items-center justify-center">
-        {fallback}
-      </AvatarFallback>
-    </Avatar>
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger>
+        <Avatar className="size-10 border transition hover:opacity-75">
+          <AvatarFallback className="flex items-center justify-center font-semibold">
+            {fallback}
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        side="bottom"
+        className="w-60"
+        sideOffset={10}
+      >
+        <div className="flex flex-col items-center justify-center gap-2 px-2.5 py-4">
+          <Avatar className="size-[52px] border transition hover:opacity-75">
+            <AvatarFallback className="flex items-center justify-center text-xl font-semibold">
+              {fallback}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-sm font-medium"> {name || "User"}</p>
+            <p className="text-xs text-muted-foreground">{email}</p>
+          </div>
+        </div>
+        <div className="my-2 h-[1px] w-full bg-muted" />
+        <DropdownMenuItem
+          onClick={() => signOut()}
+          className="flex cursor-pointer items-center justify-center font-medium text-destructive"
+        >
+          <Icon icon="stash:signout" width="48" height="48" />
+          <span>Sign out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
