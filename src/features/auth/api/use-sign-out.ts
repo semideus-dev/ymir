@@ -1,14 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { InferRequestType, InferResponseType } from "hono";
+import { InferResponseType } from "hono";
 
 import { client } from "@/lib/rpc";
+import { useRouter } from "next/navigation";
 
 type ResponseType = InferResponseType<
   (typeof client.api.auth.signout)["$post"]
 >;
 
 export function useSignOut() {
+
+  const router = useRouter()
 
   const queryClient = useQueryClient()
 
@@ -18,7 +21,8 @@ export function useSignOut() {
       return await response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["current"] });
+      router.refresh()
+      queryClient.invalidateQueries({ queryKey: ["current"] })
     }
   });
 

@@ -19,14 +19,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import SocialAuthCard from "@/features/auth/components/social-auth-card";
 import { signUpSchema } from "@/features/auth/schemas";
 import { useSignUp } from "@/features/auth/api/use-sign-up";
 
 export default function SignUpCard() {
-  const { mutate } = useSignUp();
+  const { mutate, isPending } = useSignUp();
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -49,7 +49,7 @@ export default function SignUpCard() {
           Already have an account?{" "}
           <Link
             href="/sign-in"
-            className="text-primary underline underline-offset-2 hover:underline-offset-4 transition-all font-semibold"
+            className="font-semibold text-primary underline underline-offset-2 transition-all hover:underline-offset-4"
           >
             Sign In
           </Link>
@@ -65,7 +65,7 @@ export default function SignUpCard() {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input type="text" {...field} />
+                    <Input disabled={isPending} type="text" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -80,7 +80,7 @@ export default function SignUpCard() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" {...field} />
+                    <Input disabled={isPending} type="email" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -95,7 +95,7 @@ export default function SignUpCard() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input disabled={isPending} type="password" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -110,11 +110,15 @@ export default function SignUpCard() {
               icon={ArrowRight}
               iconPlacement="right"
             >
-              Submit
+              {isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                "Submit"
+              )}
             </Button>
           </form>
         </Form>
-        <div className="w-full h-[1px] bg-gray-300 my-8" />
+        <div className="my-8 h-[1px] w-full bg-gray-300" />
         <SocialAuthCard />
       </CardContent>
     </Card>
