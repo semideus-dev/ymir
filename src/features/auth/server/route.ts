@@ -18,17 +18,21 @@ const app = new Hono()
 
     const { account } = await createAdminClient();
 
-    const session = await account.createEmailPasswordSession(email, password);
+    try {
+      const session = await account.createEmailPasswordSession(email, password);
 
-    setCookie(c, AUTH_COOKIE_PREFIX, session.secret, {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+      setCookie(c, AUTH_COOKIE_PREFIX, session.secret, {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 30,
+      });
 
-    return c.json({ success: true });
+      return c.json({ success: true });
+    } catch (e: any) {
+      return c.json({ message: e.message || "Invalid credentials" }, 400);
+    }
   })
 
   .post("/signup", zValidator("json", signUpSchema), async (c) => {
