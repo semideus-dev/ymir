@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
 import { ThemeProvider } from "@/components/global/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/lib/providers/query-provider";
 
 export const metadata: Metadata = {

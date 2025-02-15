@@ -4,7 +4,7 @@ import { InferRequestType, InferResponseType } from "hono";
 
 import { client } from "@/lib/rpc";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/lib/hooks/use-toast";
+import { toast } from "sonner";
 
 type ResponseType = InferResponseType<(typeof client.api.auth.signup)["$post"]>;
 type RequestType = InferRequestType<(typeof client.api.auth.signup)["$post"]>;
@@ -12,7 +12,6 @@ type RequestType = InferRequestType<(typeof client.api.auth.signup)["$post"]>;
 export function useSignUp() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ json }) => {
@@ -37,11 +36,7 @@ export function useSignUp() {
       queryClient.invalidateQueries({ queryKey: ["current"] });
     },
     onError: (error) => {
-      toast({
-        title: "Sign-up Failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast.error(error.message);
     },
   });
 
