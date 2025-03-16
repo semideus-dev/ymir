@@ -1,14 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+
+import { authClient } from "@/lib/auth-client";
 
 import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { PiSpinner } from "react-icons/pi";
+
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { PiSpinner } from "react-icons/pi";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -17,7 +22,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -44,37 +48,36 @@ export default function SignUpForm() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    // try {
-    //   await authClient.signUp.email(
-    //     {
-    //       email: data.email,
-    //       name: data.username,
-    //       password: data.password,
-    //     },
-    //     {
-    //       onRequest: () => {
-    //         setPending(true);
-    //       },
-    //       onSuccess: () => {
-    //         toast("Account created successfully!", {
-    //           description: "Please check your email to verify your account.",
-    //         });
-    //       },
-    //       onError: (error) => {
-    //         toast("Account creation failed!", {
-    //           description: error.error.message ?? "Something went wrong.",
-    //         });
-    //       },
-    //     }
-    //   );
-    //   setPending(false);
-    // } catch (e) {
-    //   console.log(e);
-    //   toast("Account creation failed!", {
-    //     description: "Please try again later.",
-    //   });
-    // }
-    console.log(data);
+    try {
+      await authClient.signUp.email(
+        {
+          email: data.email,
+          name: data.username,
+          password: data.password,
+        },
+        {
+          onRequest: () => {
+            setPending(true);
+          },
+          onSuccess: () => {
+            toast("Account created successfully!", {
+              description: "Please check your email to verify your account.",
+            });
+          },
+          onError: (error) => {
+            toast("Account creation failed!", {
+              description: error.error.message ?? "Something went wrong.",
+            });
+          },
+        }
+      );
+      setPending(false);
+    } catch (e) {
+      console.log(e);
+      toast("Account creation failed!", {
+        description: "Please try again later.",
+      });
+    }
   };
 
   return (

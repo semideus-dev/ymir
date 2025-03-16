@@ -1,12 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { authClient } from "@/lib/auth-client";
 
 import { z } from "zod";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { PiSpinner } from "react-icons/pi";
+
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,10 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
-import { useState } from "react";
-import { PiSpinner } from "react-icons/pi";
-import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -42,7 +46,37 @@ export default function SignInForm() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data);
+    try {
+      await authClient.signIn.email(
+        {
+          email: data.email,
+          password: data.password,
+        },
+        {
+          onRequest: () => {
+            setPending(true);
+          },
+
+          onSuccess: () => {
+            toast("Signed in successfully!");
+            router.push("/dashboard");
+            // router.refresh();
+          },
+          onError: (error) => {
+            toast("Sign in failed!", {
+              description: error.error.message ?? "Something went wrong.",
+            });
+          },
+        }
+      );
+
+      setPending(false);
+    } catch (e) {
+      console.log(e);
+      toast("Sign in failed!", {
+        description: "Please check your credientials and try again.",
+      });
+    }
   };
 
   return (
@@ -78,10 +112,7 @@ export default function SignInForm() {
                   </Link> */}
                 </div>
                 <FormControl>
-                  <Input
-                    type="password"
-                    {...field}
-                  />
+                  <Input type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
