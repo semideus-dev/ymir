@@ -62,7 +62,7 @@ export default function CreateProjectDialog() {
     try {
       await createProject({
         name: data.name,
-        userId: user.id,
+        ownerId: user.id,
       });
       toast("Project created successfully");
     } catch (error) {

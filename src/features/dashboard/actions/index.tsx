@@ -4,20 +4,34 @@ import { db } from "@/lib/db";
 
 interface CreateProjectProps {
   name: string;
-  userId: string;
+  ownerId: string;
 }
 
-export async function createProject({ name, userId }: CreateProjectProps) {
+export async function createProject({ name, ownerId }: CreateProjectProps) {
   try {
     await db.project.create({
       data: {
         name,
-        userId,
+        ownerId,
       },
     });
     return { success: true };
   } catch (error) {
     console.error(error);
     return { success: false };
+  }
+}
+
+export async function getProjectsByUserId(ownerId: string) {
+  try {
+    const projects = await db.project.findMany({
+      where: {
+        ownerId,
+      },
+    });
+    return { projects };
+  } catch (error) {
+    console.error(error);
+    return { projects: [] };
   }
 }

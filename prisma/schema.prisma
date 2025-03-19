@@ -68,7 +68,7 @@ model Account {
 model Project {
   id        String   @id @default(cuid()) @map("_id")
   name      String
-  userId    String
+  ownerId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
