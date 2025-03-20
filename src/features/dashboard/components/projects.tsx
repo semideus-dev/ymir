@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import CreateProjectDialog from "@/features/dashboard/components/create-project-dialog";
 import { useSession } from "@/app/providers/session-provider";
-import { getProjectsByUserId } from "../actions";
+import { getProjectsByUserId } from "../actions/project";
 import { Project } from "@prisma/client";
 import { useRouter } from "next/navigation";
 

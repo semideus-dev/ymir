@@ -7,9 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
-  USER
+enum Plan {
+  FREE
+  PAID
 }
 
 model User {
@@ -18,11 +18,13 @@ model User {
   email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
-  role          Role      @default(USER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  plan          Plan      @default(FREE)
+  projects      Project[] @relation("ProjectMembers")
+  invites       Invite[]  @relation("UserInvites")
 }
 
 model Session {
@@ -68,7 +70,21 @@ model Account {
 model Project {
   id        String   @id @default(cuid()) @map("_id")
   name      String
-  ownerId    String
+  ownerId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  members   User[]   @relation("ProjectMembers")
+  invites   Invite[] 
+}
+
+model Invite {
+  id        String   @id @default(cuid()) @map("_id")
+  email     String
+  projectId String
+  userId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserInvites")
 }

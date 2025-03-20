@@ -11,7 +11,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -28,23 +27,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PiSpinner } from "react-icons/pi";
 import { toast } from "sonner";
 import { useSession } from "@/app/providers/session-provider";
-import { createProject } from "@/features/dashboard/actions/project";
+import { sendInvite } from "@/features/dashboard/actions/project";
+import { FaUserPlus } from "react-icons/fa6";
 
 const formSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "Project name must be at least 3 characters" }),
+  email: z.string().email({ message: "Invalid email address" }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function CreateProjectDialog() {
+export default function InviteDialog({ projectId }: { projectId: string }) {
   const session = useSession();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      email: "",
     },
   });
 
@@ -54,25 +52,20 @@ export default function CreateProjectDialog() {
       return;
     }
 
-    const user = session.user;
-
     try {
-      await createProject({
-        name: data.name,
-        ownerId: user.id,
-      });
-      toast("Project created successfully");
+      await sendInvite(data.email, projectId);
+      toast("Invite sent");
     } catch (error) {
       console.error(error);
-      toast("Failed to create project");
+      toast("Failed to send invite");
     }
   };
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button>
-          Create Project
-          <Plus />
+          <FaUserPlus />
+          <span>Invite</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -86,12 +79,12 @@ export default function CreateProjectDialog() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Project Name</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

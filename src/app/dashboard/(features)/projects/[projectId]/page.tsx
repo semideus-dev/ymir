@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MdOutlineTaskAlt } from "react-icons/md";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { getProjectById } from "@/features/dashboard/actions";
+import { getProjectById } from "@/features/dashboard/actions/project";
+import InviteDialog from "@/features/dashboard/components/invite-dialog";
 
 export default async function ProjectDetailsPage({
   params,
@@ -39,10 +40,7 @@ export default async function ProjectDetailsPage({
             <FaBell />
             <span>Notifications</span>
           </Button>
-          <Button>
-            <FaUserPlus />
-            <span>Invite</span>
-          </Button>
+          <InviteDialog projectId={project.id} />
           <Button size="icon">
             <Settings />
           </Button>
