@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MdOutlineTaskAlt } from "react-icons/md";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { getProjectById } from "@/features/dashboard/actions";
 
 export default async function ProjectDetailsPage({
   params,
@@ -15,12 +16,23 @@ export default async function ProjectDetailsPage({
   params: Promise<{ projectId: string }>;
 }) {
   const { projectId } = await params;
+
+  const project = await getProjectById(projectId);
+
+  if (!project) {
+    return <div>Project not found</div>;
+  }
+
   return (
     <section className="flex flex-col gap-6">
       <div className="px-10 py-5 border-b flex items-center justify-between">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-semibold tracking-tight">MIMIR</h1>
-          <span className="text-muted-foreground">Created on 01/01/2023</span>
+          <h1 className="text-3xl font-semibold tracking-tight uppercase">
+            {project.name}
+          </h1>
+          <span className="text-muted-foreground">
+            Created on {new Date(project.createdAt).toLocaleDateString()}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <Button>

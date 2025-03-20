@@ -35,3 +35,17 @@ export async function getProjectsByUserId(ownerId: string) {
     return { projects: [] };
   }
 }
+
+export async function getProjectById(projectId: string) {
+  try {
+    const project = await db.project.findUnique({
+      where: {
+        id: projectId,
+      },
+    });
+    return project;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
