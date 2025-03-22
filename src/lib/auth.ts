@@ -23,6 +23,9 @@ export const auth = betterAuth({
       invites: {
         type: "string[]",
       },
+      ownedProjects: {
+        type: "string[]",
+      },
     },
   },
   emailAndPassword: {

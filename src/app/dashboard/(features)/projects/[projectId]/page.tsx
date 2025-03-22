@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
-import { FaUsers, FaUserPlus, FaBell } from "react-icons/fa";
+import { FaUsers, FaBell } from "react-icons/fa";
 import { IoStatsChart } from "react-icons/io5";
 
 import React from "react";
@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getProjectById } from "@/features/dashboard/actions/project";
 import InviteDialog from "@/features/dashboard/components/invite-dialog";
+import { MembersCard } from "@/features/dashboard/components/cards/members-card";
 
 export default async function ProjectDetailsPage({
   params,
@@ -60,29 +61,7 @@ export default async function ProjectDetailsPage({
             <Progress value={67} className="mt-2" />
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between text-lg">
-            <CardTitle className="font-medium">Members</CardTitle>
-            <FaUsers />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">8</div>
-            <div className="mt-2 flex -space-x-2">
-              <Avatar className="bg-primary border border-background text-background h-8 w-8">
-                <AvatarFallback>A</AvatarFallback>
-              </Avatar>
-              <Avatar className="bg-primary border border-background text-background h-8 w-8">
-                <AvatarFallback>B</AvatarFallback>
-              </Avatar>
-              <Avatar className="bg-primary border border-background text-background h-8 w-8">
-                <AvatarFallback>C</AvatarFallback>
-              </Avatar>
-              <Avatar className="bg-primary border border-background text-background h-8 w-8">
-                <AvatarFallback>+5</AvatarFallback>
-              </Avatar>
-            </div>
-          </CardContent>
-        </Card>
+        <MembersCard members={project.members} ownerId={project.ownerId} />
         <Card>
           <CardHeader className="flex flex-row items-center justify-between text-lg">
             <CardTitle className="font-medium">Invoice</CardTitle>
